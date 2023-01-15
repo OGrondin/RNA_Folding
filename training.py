@@ -3,11 +3,17 @@ This first script computes distance (0-20 Angstroms, bins of 1 Angstrom range) d
 It takes into account distances between the Carbon 3 atom of every two nucleotides i and j where j > i+3 inside a chain.
 It also computes the distribution of 'XX' where X is any nucleotide and the log-ratio of each nucleotide to 'XX'.
 '''
+
 import os
 import resources
 import time
 import numpy as np
 import pandas as pd
+
+
+# Variables
+
+PDB_IDs_training = ["2fqn", "4gxy", "5kpy", "5l4o", "5lyu", "5t83", "5u3g", "6wtl", "6ymc", "7eem"]
 
 def distances_computation(list_PDB):
     '''
@@ -81,9 +87,11 @@ def frequencies_score(distance_dict):
 
 
 if __name__ == '__main__':
+
+    start = time.time()
     # Input preparation
     Parsed_PDBs = list()
-    MY_PDBS = resources.PDB_list_path(["2fqn", "4gxy", "5kpy", "5l4o", "5lyu", "5t83", "5u3g", "6wtl", "6ymc", "7eem"])
+    MY_PDBS = resources.PDB_list_path(PDB_IDs_training)
 
     # Counting distances in bins
     for PDB_File in MY_PDBS:
@@ -99,3 +107,4 @@ if __name__ == '__main__':
 
 
     # outputs(pairwise_distances, freq_pairwise, freq_overall, log ratios)
+    print("Time spent:", round(time.time() - start, 4), "seconds")
