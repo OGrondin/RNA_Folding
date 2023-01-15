@@ -28,7 +28,7 @@ def distances_computation(list_PDB):
         for i in range(len(Parsed_PDB)):
             for j in range(i+3, len(Parsed_PDB)):
                 if Parsed_PDB[i][5] == Parsed_PDB[j][5]: # Testing to ensure intra-chain comparison
-                    pair, vector_dist = resources.prepare_distance(Parsed_PDB[i],Parsed_PDB[j])
+                    pair, vector_dist = resources.prepare_distance(Parsed_PDB[i], Parsed_PDB[j])
                     eucl_dist = resources.dist_3D(vector_dist)
                     # print(pair, vector_dist, eucl_dist) # Debugging only
                     if eucl_dist > 20:
@@ -83,23 +83,24 @@ if __name__ == '__main__':
 
     start = time.time()
 
-    # Counting distances in bins
+    ## Counting distances in bins
     for PDB_File in MY_PDBS:
         Parsed_PDBs.append(resources.PDB_Parser(PDB_File).exec())
     pairwise_distances = distances_computation(Parsed_PDBs)
 
-    # Computing frequencies for (i,j) and (X,X) pairs, where i, j are A, C, G or U and X is any of the above
+    ## Computing frequencies for (i,j) and (X,X) pairs, where i, j are A, C, G or U and X is any of the above
     freq_pairwise, freq_overall, score_pairwise = frequencies_score(pairwise_distances)
     print("Pairwise scores are as follows:")
     resources.pretty(score_pairwise)
-    # Functional Output: .json
+
+    ## Functional Output: .json
     score_pairwise_json = json.dumps(score_pairwise)
     with open("Results/Score_Output.json", 'w+') as j:
         sys.stdout = j  # Change the standard output to the file we created.
         print(score_pairwise_json)
         sys.stdout = original_stdout  # Reset the standard output to its original value
 
-    # Pretty Output
+    ## Pretty Output
     with open("Results/Pretty_Output.txt", 'w+') as p:
         sys.stdout = p  # Change the standard output to the file we created.
 

@@ -20,6 +20,9 @@ MY_PDBS = resources.PDB_list_path(PDB_IDs_Puzzles, "RNA_Puzzles3")
 print(MY_PDBS)
 
 def scoring(scoring_dict, list_PDB):
+    ''''
+    Main scoring function: Computes a score for a list of .pdb files to score and writes results in Scoring.tsv
+    '''
     with open("Results/Scoring.tsv", 'w') as _:
         pass
     id_index = 0
@@ -28,7 +31,7 @@ def scoring(scoring_dict, list_PDB):
         for i in range(len(Parsed_PDB)):
             for j in range(i + 3, len(Parsed_PDB)):
                 if Parsed_PDB[i][5] == Parsed_PDB[j][5]:  # Testing to ensure intra-chain comparison
-                    pair, vector_dist = resources.prepare_distance(Parsed_PDB[i],Parsed_PDB[j])
+                    pair, vector_dist = resources.prepare_distance(Parsed_PDB[i], Parsed_PDB[j])
                     eucl_dist = resources.dist_3D(vector_dist)
                     # print(pair, vector_dist, eucl_dist) # Debugging only
                     if eucl_dist > 20:
@@ -49,6 +52,10 @@ def scoring(scoring_dict, list_PDB):
 
 
 def interpolate(scoring_dict, distances_puzzle):
+    ''''
+    This function computes interpolated data from the objective function's data and a puzzle's distances dictionnaries.
+    :return: Total Gibbs pseudoenergy, through summing interpolated contribution of each pair
+    '''
     pair_index = 0
     interpol = [0 for _ in range(10)]
     for key in scoring_dict:
@@ -66,5 +73,4 @@ def interpolate(scoring_dict, distances_puzzle):
 if __name__ == '__main__':
     for PDB_File in MY_PDBS:
         Parsed_PDBs.append(resources.PDB_Parser(PDB_File).exec())
-
     scoring(scoring_dict, Parsed_PDBs)

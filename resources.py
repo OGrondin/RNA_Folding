@@ -29,8 +29,8 @@ class PDB_Parser:
 
     def pdb_ATOM_df(self):
         '''
-        Main PDB parsing function.
-        :return: List of lines containing C3 atoms
+        PDB parsing method, takes a path as input and outputs a list of lines
+        :return: List of lines containing only C3 atoms in self.output
         '''
         with open(self.path, 'r') as f:
             self.output = [k.strip("\n") for k in f.readlines()]
@@ -42,6 +42,10 @@ class PDB_Parser:
 
 
     def exec(self):
+        '''
+        Main method of the class, calls pdb_ATOM_df() which itself calls split_pdb_line()
+        :return: Parsed lines from the input PDB file
+        '''
         print("Log: Parsing data from:", self.path)
         self.pdb_ATOM_df()
         print("Number of nucleotides", len(self.output))
@@ -58,10 +62,16 @@ def dist_3D(coords_series):
     x1, y1, z1, x2, y2, z2 = coords_series
     return ((x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2) ** .5
 
-def prepare_distance(elemA, elemB):
-    pair = sorted((elemA[4], elemB[4]))  # Sorted ensures there are 10 pairings, not 16
+def prepare_distance(listA, listB):
+    '''
+    Parses two lines to allow for the computation of their 3D euclidean distance by dist_3D
+    :param listA: First line as a list
+    :param listB: Second line as a list
+    :return: Pair: two-letter code for the two nucleotides involved
+    '''
+    pair = sorted((listA[4], listB[4]))  # Sorted ensures there are 10 pairings, not 16
     pair = str(pair[0]) + str(pair[1])
-    vector_dist = elemA[8:11] + elemB[8:11]
+    vector_dist = listA[8:11] + listB[8:11]
     vector_dist = [float(elem) for elem in vector_dist]
     return (pair, vector_dist)
 
@@ -70,6 +80,11 @@ def prepare_distance(elemA, elemB):
 
 # From sth on https://stackoverflow.com/questions/3229419/how-to-pretty-print-nested-dictionaries
 def pretty(d, indent=0):
+    '''
+    Pretty printing function for dictionnaries
+    :param d: Dictionnary to pretty print
+    :param indent: Initial indentation, to be updated as the function goes down a nested dictionnary
+    '''
    for key, value in d.items():
       print('\t' * indent + str(key))
       if isinstance(value, dict):
@@ -80,6 +95,12 @@ def pretty(d, indent=0):
 ## File management
 
 def PDB_list_path(list_PDB_IDs, folder):
+    '''
+    Transforms a list of IDs into callable paths
+    :param list_PDB_IDs: List of PDB IDs of the files
+    :param folder: Folder containing the files
+    :return: List of paths to the desired files
+    '''
     for i, x in enumerate(list_PDB_IDs):
         list_PDB_IDs[i] = "{}/".format(folder) + str(x) + ".pdb"
     return list_PDB_IDs
@@ -92,7 +113,7 @@ def pseudo_score(observed, reference):
     :return: 
     '''
     if reference != 0:
-        return (min((- np.log(observed/reference)), 10))
+        return (min((- np.log(observed/reference)), 10)) # Raises warning, though this special case should be handled...
     else:
         return(10)
 
