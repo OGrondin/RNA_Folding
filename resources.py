@@ -84,6 +84,6 @@ def pseudo_score(observed, reference):
     :return: 
     '''
     if reference != 0:
-        return (min(- np.log(observed/reference)), 10)
+        return (min((- np.log(observed/reference)), 10))
     else:
         return(10)

@@ -62,7 +62,8 @@ def frequencies_score(distance_dict):
     # Computing frequency of each pair as well as overall distance frequency
     for key in distance_dict:
         dist_list = distance_dict[key]
-        list_XX = [sum(i,j) for i, j in zip(list_XX, dist_list)]
+        print(list_XX, dist_list)
+        list_XX = [i+j for i, j in zip(list_XX, dist_list)]
         freq_list = [elem / sum(dist_list) for elem in dist_list]
         frequency_dict[key] = freq_list
     list_XX = [elem / sum(list_XX) for elem in dist_list]
@@ -70,13 +71,10 @@ def frequencies_score(distance_dict):
     score_dict = dict()
     for key in frequency_dict:
         freq_list = frequency_dict[key]
-        print(len(freq_list), len(list_XX))
         score_list = [(float(x),float(y)) for x, y in zip(freq_list, list_XX)]
-        score_list = [resources.pseudo_score(x,y) for x, y in score_list] # Bugs at this stage for some reason
+        score_list = [resources.pseudo_score(x,y) for x, y in score_list]
         score_dict[key] = score_list
     return(frequency_dict, list_XX, score_dict)
-
-
 
 
 
