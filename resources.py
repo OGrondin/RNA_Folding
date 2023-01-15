@@ -5,8 +5,8 @@ class PDB_Parser:
     '''
     A class common to both the training.py and scoring.py, to process PDB files and get desired output format (C3 atoms)
     '''
-    def __init__(self, PDB_file):
-        self.path = PDB_file
+    def __init__(self, PDB_folder):
+        self.path = PDB_folder
         self.output = list()
 
     def split_pdb_line(self, line):
@@ -37,8 +37,8 @@ class PDB_Parser:
             self.output = [l for l in self.output if (l[0:4] == "ATOM")]
         # Parsing as a list of lists, one list per line
         self.output = [self.split_pdb_line(l) for l in self.output]
-        # Selecting only rows corresponding to C3 atoms of the first chain "A"
-        self.output = [l for l in self.output if l[2] == "C3'"]
+        # Selecting only rows corresponding to C3 atoms
+        self.output = [l for l in self.output if (l[2] == "C3'" or l[2] == "C3*")]
 
 
     def exec(self):
@@ -58,6 +58,14 @@ def dist_3D(coords_series):
     x1, y1, z1, x2, y2, z2 = coords_series
     return ((x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2) ** .5
 
+def prepare_distance(elemA, elemB):
+    pair = sorted((elemA[4], elemB[4]))  # Sorted ensures there are 10 pairings, not 16
+    pair = str(pair[0]) + str(pair[1])
+    vector_dist = elemA[8:11] + elemB[8:11]
+    vector_dist = [float(elem) for elem in vector_dist]
+    return (pair, vector_dist)
+
+
 ## Print functions
 
 # From sth on https://stackoverflow.com/questions/3229419/how-to-pretty-print-nested-dictionaries
@@ -71,9 +79,9 @@ def pretty(d, indent=0):
 
 ## File management
 
-def PDB_list_path(list_PDB_IDs):
+def PDB_list_path(list_PDB_IDs, folder):
     for i, x in enumerate(list_PDB_IDs):
-        list_PDB_IDs[i] = "PDB_Training/" + str(x) + ".pdb"
+        list_PDB_IDs[i] = "{}/".format(folder) + str(x) + ".pdb"
     return list_PDB_IDs
 
 def pseudo_score(observed, reference):
@@ -87,3 +95,5 @@ def pseudo_score(observed, reference):
         return (min((- np.log(observed/reference)), 10))
     else:
         return(10)
+
+

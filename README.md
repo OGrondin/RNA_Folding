@@ -18,7 +18,7 @@ cd RNA_Folding
 pip install -r requirements.txt 
 ```
 
-## Scripts
+## Description of Scripts
 This repository contains four scripts:
 - resources.py, to be sourced by other scripts
 - training.py, to compute frequencies
@@ -27,6 +27,13 @@ This repository contains four scripts:
 
 (https://github.com/RNA-Puzzles/raw_dataset_and_for_assessment)
 
+## Launching Scripts
+```
+./training.py  # To launch first, statistical training on ten structures.
+./plotting.py  # To launch second, plots results of the trained Gibbs pseudoenergy function.
+./scoring.py   # To launch last, scores unseen structures using objective function.
+```
+
 ## Training structures
 10 training structures were chosen from the RNA-only PDB files.
 Link: https://www.rcsb.org/stats/growth/growth-rna
@@ -34,6 +41,19 @@ Diversity and low number of chains (<3, for greater number of intrachain pairs) 
 
 The chosen training structures have the following PDB IDs:
 "2fqn", "4gxy", "5kpy", "5l4o", "5lyu", "5t83", "5u3g", "6wtl", "6ymc" and "7eem".
+
+## Results
+
+In the results folder are:
+- Pretty_Output.txt, with highlights of the training process
+- Score_Output.json, containing the score for each (pair, bin) couple
+- Plots of the Gibbs Pseudoenergy by distance bins  for each pair. For pair 'IJ', the file is named "IJ.png"
+- The scores of all the proposed solutions for the third challenge of RNA Puzzles: 'Scoring.tsv'
+
+## Improvements
+
+Potential improvements include increasing the training dataset 
+as some examples of (pair, bin) couples are not seen in training dataset and are thus brutally penalized (with max score: 10)
 
 ## References
 ### RNA Puzzles
