@@ -11,6 +11,12 @@ The rationale behind this upper boundary is that weak interatomic interactions f
 
 ## Installation
 
+Open a terminal and run the following commands:
+```
+git clone https://github.com/OGrondin/RNA_Folding
+cd RNA_Folding
+pip install -r requirements.txt 
+```
 
 ## Scripts
 This repository contains four scripts:

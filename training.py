@@ -103,6 +103,7 @@ if __name__ == '__main__':
     # Computing frequencies for (i,j) and (X,X) pairs, where i, j are A, C, G or U and X is any of the above
     freq_pairwise, freq_overall, score_pairwise = frequencies_score(pairwise_distances)
 
+    # Pretty_Output
     with open("Results/Pretty_Output.txt", 'w+') as p:
         sys.stdout = p  # Change the standard output to the file we created.
 
