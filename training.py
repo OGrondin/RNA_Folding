@@ -7,8 +7,7 @@ It also computes the distribution of 'XX' where X is any nucleotide and the log-
 import sys
 import resources
 import time
-import numpy as np
-import pandas as pd
+import json
 
 
 # Variables
@@ -87,9 +86,6 @@ def frequencies_score(distance_dict):
     return(frequency_dict, list_XX, score_dict)
 
 
-
-
-
 if __name__ == '__main__':
 
     start = time.time()
@@ -103,7 +99,15 @@ if __name__ == '__main__':
     # Computing frequencies for (i,j) and (X,X) pairs, where i, j are A, C, G or U and X is any of the above
     freq_pairwise, freq_overall, score_pairwise = frequencies_score(pairwise_distances)
 
-    # Pretty_Output
+    # Functional Output
+    score_pairwise_json = json.dumps(score_pairwise)
+    with open("Results/Score_Output.json", 'w+') as j:
+        sys.stdout = j  # Change the standard output to the file we created.
+        print(score_pairwise_json)
+        sys.stdout = original_stdout  # Reset the standard output to its original value
+
+
+    # Pretty Output
     with open("Results/Pretty_Output.txt", 'w+') as p:
         sys.stdout = p  # Change the standard output to the file we created.
 

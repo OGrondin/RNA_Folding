@@ -3,13 +3,28 @@ This second script takes as input the Gibbs energy pseudoscore for each couple (
 is a pairing between two nucleotides (A, C, T or U) and bin is a distance category of 1 Angstrom range between 0 and 20.
 '''
 
-# Variables
-PDB_IDs_Puzzles = ["3_solution", "3_solution_0", "3_solution_1", "PZ3_solution_0", "PZ3_solution_0", "PZ3_Bujnicki_1", \
-                   "PZ3_Bujnicki_2", "PZ3_Chen_1", "PZ3_Das_1", "PZ3_Das_2", "PZ3_Das_3", "PZ3_Das_4", "PZ3_Das_5", \
-                   "PZ3_Dokholyan_1", "PZ3_Dokholyan_1", "PZ3_Major_1", "PZ3_Major_1"]
+import json
+import matplotlib.pyplot as plt
 
-Parsed_PDBs = list()
-MY_PDBS = resources.PDB_list_path(PDB_IDs_training)
+import resources
 
-from matplotlib.pyplot as plt
+to_plot = dict()
+with open("Results/Score_Output.json", 'r') as json_file:
+    to_plot = json.load(json_file)
 
+def plot(show_graph = False):
+    for key in to_plot:
+        data = to_plot[key]
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1)
+        ax.set_xlabel('Distance in Angstroms')
+        ax.set_ylabel('Pseudoenergy score')
+        plt.plot(range(20), data)
+        ax.set_title('Pseudoenergy per distance to each other: Pair {}'.format(key))
+        if show_graph:
+            plt.show()
+        else:
+            plt.savefig("Results/Plots/" + key + ".png")
+
+if __name__ == '__main__':
+    plot()
