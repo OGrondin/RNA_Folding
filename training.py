@@ -4,7 +4,7 @@ It takes into account distances between the Carbon 3 atom of every two nucleotid
 It also computes the distribution of 'XX' where X is any nucleotide and the log-ratio of each nucleotide to 'XX'.
 '''
 
-import os
+import sys
 import resources
 import time
 import numpy as np
@@ -12,8 +12,12 @@ import pandas as pd
 
 
 # Variables
-
 PDB_IDs_training = ["2fqn", "4gxy", "5kpy", "5l4o", "5lyu", "5t83", "5u3g", "6wtl", "6ymc", "7eem"]
+original_stdout = sys.stdout
+
+# Input preparation
+Parsed_PDBs = list()
+MY_PDBS = resources.PDB_list_path(PDB_IDs_training)
 
 def distances_computation(list_PDB):
     '''
@@ -89,22 +93,29 @@ def frequencies_score(distance_dict):
 if __name__ == '__main__':
 
     start = time.time()
-    # Input preparation
-    Parsed_PDBs = list()
-    MY_PDBS = resources.PDB_list_path(PDB_IDs_training)
 
     # Counting distances in bins
     for PDB_File in MY_PDBS:
         Parsed_PDBs.append(resources.PDB_Parser(PDB_File).exec())
     pairwise_distances = distances_computation(Parsed_PDBs)
-    resources.pretty(pairwise_distances)
+
 
     # Computing frequencies for (i,j) and (X,X) pairs, where i, j are A, C, G or U and X is any of the above
     freq_pairwise, freq_overall, score_pairwise = frequencies_score(pairwise_distances)
-    resources.pretty(freq_pairwise)
-    resources.pretty(score_pairwise)
-    print(freq_overall)
 
+    with open("Results/Pretty_Output", 'w+') as p:
+        sys.stdout = p  # Change the standard output to the file we created.
 
-    # outputs(pairwise_distances, freq_pairwise, freq_overall, log ratios)
-    print("Time spent:", round(time.time() - start, 4), "seconds")
+        print("Pairwise distances matrix", "\n")
+        resources.pretty(pairwise_distances)
+        print("\n", "Pairwise Frequency matrix: Fobs_ij = N_ij(r) / N_ij, where r is the distance bin", "\n")
+        resources.pretty(freq_pairwise)
+        print("\n", "Overall Frequency matrix: Fref_XX = N_XX(r) / N_XX, where X is any base (A, C, G or U)", "\n")
+        print([round(i, 5) for i in freq_overall])
+
+        print("\n", "Pairwise Score matrix: u_ij = - log (Fobs_ij(r) / Fref_ij(r)", "\n")
+        resources.pretty(score_pairwise)
+
+        print("\n","Time spent:", round(time.time() - start, 4), "seconds")
+
+        sys.stdout = original_stdout  # Reset the standard output to its original value

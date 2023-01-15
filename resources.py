@@ -67,7 +67,7 @@ def pretty(d, indent=0):
       if isinstance(value, dict):
          pretty(value, indent+1)
       else:
-         print('\t' * (indent+1) + str(value))
+         print('\t' * (indent+1) + str([round(i,5) for i in value]))
 
 ## File management
 
